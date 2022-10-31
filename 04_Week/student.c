@@ -74,6 +74,8 @@ int main ( void )
     {  
     //////////////////////////////////////////////////////////////////////
     // Set the modules
+    // char name [50];
+    // int credits;
     //////////////////////////////////////////////////////////////////////
     struct Module module00 = { " Programming_00 ", 5 };
     struct Module module01 = { " Programming_01 ", 10 };
