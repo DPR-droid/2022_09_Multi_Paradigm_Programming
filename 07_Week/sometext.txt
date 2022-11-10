@@ -1,0 +1,3 @@
+Data Mining is a strategy of automatically reading large volumes of data for some pre-defined task. Metadata can be described as information describing other information.
+The following is a list of such metadata: number of words, number of characters, number of characters excluding white spaces, number of sentences, number of paragraphs, average number of words in a sentence. Create an application that when given a text file automatically generates metadata describing the information above. 
+Break the problem down into a number of small problems. Need to identify what the problem requires us to solve!
