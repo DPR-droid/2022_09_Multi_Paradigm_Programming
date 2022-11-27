@@ -127,3 +127,35 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+config.py
+config_test.py
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.mp4
+*.docx
+*.pdf
+*.mov
+
+# Windows shortcuts
+*.lnk
