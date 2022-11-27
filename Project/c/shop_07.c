@@ -100,13 +100,15 @@ struct Shop createAndStockShop()
 
 void printShop(struct Shop* s)
 {
-	printf("Shop has %.2f in cash\n\n", s->cash);
-	printf("-------------\n");
+	
+	printf("\n\n*******************\n");
+	printf("Shop has %.2f in cash\n", s->cash);
+	printf("******************\n");
 	for (int i = 0; i < s->index; i++)
 	{
+		printf("\nThe shop has %d of:\n", s->stock[i].quantity);
 		printProduct(s->stock[i].product);
-		printf("The shop has %d of the above\n", s->stock[i].quantity);
-		printf("-------------\n\n");
+		printf("-------------\n");
 	}
 }
 
@@ -167,16 +169,17 @@ struct Customer customer_file()
 // MPP - Week 4 - Shop in C Part 2.mov
 void printCustomer(struct Customer c, struct Shop* s)
 {
+	printf("\n\n#### Customer Shopping List ####\n\n");
 	printf("Customer name is %s and the budget for shopping is %.2f\n", c.cname, c.budget);
-	printf("-------------\n");
+	printf("-------------\n\n");
 	
 	// Set the variable for the total cost of Customer bill.
 	double total = 0;
 
-	// Take backup of Shop Stock
-	// Create a live copy of the shop
-	struct Shop* testShop = &s;
+	// Test for Quantity
+	int quan = 0;
 
+	
 	for (int a = 0; a < c.index; a++)
 	{
 		
@@ -217,8 +220,8 @@ void printCustomer(struct Customer c, struct Shop* s)
 					if (s->stock[b].quantity >= c.shoppingList[a].quantity)
 					{
 						// remove quantity of item from shop
-						s->stock[b].quantity =  s->stock[b].quantity - c.shoppingList[a].quantity;
-						
+						// s->stock[b].quantity =  s->stock[b].quantity - c.shoppingList[a].quantity;
+												
 						// Get Total bill of shopping
 						total = total + subtotal;
 
@@ -245,11 +248,13 @@ void printCustomer(struct Customer c, struct Shop* s)
 					}
 			else if (res == 2)
 					{
-							printf("The shop is out of stock on the following product: %s\n", cusItem);							
+							printf("The shop is out of stock on the following product: %s\n", cusItem);		
+							quan = 1;					
 					}
 			else if (res == 3)
 					{
 							printf("The shop cannot fill the order of product: %s\n", cusItem);
+							quan = 1;
 					}
 			//////////////////////////////////////////////////////////////////
 
@@ -258,7 +263,35 @@ void printCustomer(struct Customer c, struct Shop* s)
 
 	//////////////////////////////////////////////////////////////////
 	// If customer has sufficient funds print out and update shop cash	
-	if (c.budget > total ){
+	if (c.budget < total){
+		double insufficient_funds = total - c.budget;
+		printf("\n-------------\n");
+		printf("The total cost of %s shopping is %.2f\n", c.cname, total);
+		printf("%s requires %.2f more for the shopping\n", c.cname, insufficient_funds);
+		printf("------------\n\n");
+	}
+	else if(quan == 1){
+		printf("\n-------------\n");
+		printf("Unfortunately the shop cannot fill you order\n");
+		printf("\n-------------\n");
+
+	}
+	else if (c.budget >= total ){
+
+		// Update the Stock in the Shop
+		for (int a = 0; a < c.index; a++)
+		{
+
+		char *cusItem = c.shoppingList[a].product.name;
+
+		for (int b = 0; b < s->index; b++)
+			{
+				if (strcmp(s->stock[b].product.name, cusItem ) == 0)
+				{
+					s->stock[b].quantity =  s->stock[b].quantity - c.shoppingList[a].quantity;
+				}		
+			}
+		}	
 		
 		// Update the cash in the shop based on money received
 		s->cash = s->cash + total;
@@ -269,18 +302,6 @@ void printCustomer(struct Customer c, struct Shop* s)
 		printf("You have change of €%.2f\n", change);
 		printf("------------\n\n");
 
-	}
-	else
-	{
-		double insufficient_funds = total - c.budget;
-		
-		// Restore shop
-		struct Shop* s = &testShop;
-
-		printf("\n-------------\n");
-		printf("The total cost of %s shopping is %.2f\n", c.cname, total);
-		printf("%s requires %.2f to pay for shopping\n", c.cname, insufficient_funds);
-		printf("------------\n\n");
 	}
 	//////////////////////////////////////////////////////////////////
 
@@ -328,7 +349,7 @@ struct Customer liveMode(){
 
 		printf("The product is: %s and you want %d\n", pname, quantity); 
 		a++;
-		printf("a is currently %d\n", a);
+		// printf("a is currently %d\n", a);
 
 		struct Product product = { pname };
 		struct ProductStock stockItem = { product, quantity };
@@ -343,13 +364,16 @@ struct Customer liveMode(){
 
 
 //////////////////////////////////////////////////////////////////
-
-// Add Menu
 // https://www.studytonight.com/c/programs/misc/menu-driven-program
+// Add Menu
+// This allows the user to select the following 
+// Stock in Shop and 
+//
+// 
 
 int main()
 {
-    printf("\n\n\t\tWelcome to the C Shop\n\n\n");
+    printf("\n\n\t\tWelcome to the C Shop\n");
     int choice, num, i;
     unsigned long int fact;
 
@@ -361,7 +385,8 @@ int main()
 
     while(1)
     {
-        printf("1. Stock in Shop \n");
+        printf("\n\n#### Main Menu ####\n");
+		printf("1. Stock in Shop \n");
         printf("2. Customer Shopping List\n");
         printf("3. Live mode  \n");
         printf("4. Exit\n\n\n");
@@ -380,10 +405,10 @@ int main()
         
             case 2:
 				{
-				struct Customer shoppinglist = customer_file();
 				//struct Shop shop = createAndStockShop();
-				printCustomer(shoppinglist, liveShop);
 				//customer_file();
+				struct Customer shoppinglist = customer_file();
+				printCustomer(shoppinglist, liveShop);
 				}
                 break;
         
@@ -395,10 +420,10 @@ int main()
 				break;
         
             case 4:
-                printf("\n\n\t\t\tCoding is Fun !\n\n\n");
+                printf("\n\n\t\t\tExit the C Shop\n\n\n");
                 exit(0);    // terminates the complete program execution
         }
     }
-    printf("\n\n\t\t\tCoding in C is Fun !\n\n\n");
+    printf("\n\n\t\t\tCoding in C is Fun!\n\n\n");
     return 0;
 }
