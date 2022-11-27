@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List
 import csv
+import logging
 
 @dataclass
 class Product:
@@ -71,8 +72,55 @@ def print_shop(s):
         print_product(item.product)
         print(f'The Shop has {item.quantity} of the above')
 
-s = create_and_stock_shop()
-print_shop(s)
+# s = create_and_stock_shop()
+# print_shop(s)
 
-c = read_customer("../customer.csv")
-print_customer(c)
+
+# Main
+def main():
+
+    while True: 
+        display_menu()
+
+        choice = input("Choice: ")
+        # 
+        if (choice == "1"):
+            s = create_and_stock_shop()
+            print_shop(s)
+            # break
+            
+        # 
+        elif (choice == "2"):
+            c = read_customer("../customer.csv")
+            print_customer(c)
+
+            # break
+
+        elif (choice == "3"): 
+            
+            break
+
+        elif (choice == "4"): 
+            
+            break
+
+        else:
+            # If user does not choose the correct input
+            # Print a message to the screen 
+            # Returns user to main menu 
+            print("\n***Please choose a number from above list or to exit press 4***\n")
+
+# Displays a main menu for User
+def display_menu():
+    logging.info('display_menu')
+    print("Employees\n---------\n")
+    print("Menu")
+    print("=====")
+    print("1. Stock in Shop ")
+    print("2. Customer Shopping List")
+    print("3. Live mode")
+    print("4. Exit")
+
+
+if __name__ == "__main__":
+    main()

@@ -7,11 +7,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+//****************************************************************
 //  Entities
-// 		Product
-// 		ProductStock
-// 		Shop
-// 		Customer
+// 	- Product
+// 	- ProductStock
+// 	- Shop
+// 	- Customer
 
 // What is a structure? 
 // A structure is a key word that create user defined data type in C/C++. 
@@ -42,17 +44,24 @@ struct Customer {
 	int index;								// index for Products
 };
 
-//
+//****************************************************************
+
+
+//****************************************************************
+// Method Print Product
+// This method prints the product name and price passed from 
+// struct Product
 
 void printProduct(struct Product p)
 {
 	printf("PRODUCT NAME: %s \nPRODUCT PRICE: %.2f\n", p.name, p.price);
-	// printf("-------------\n");
 }
+//****************************************************************
 
 
-
+//****************************************************************
 // Create Stock from CSV file
+// Method to import data from CSV file
 
 struct Shop createAndStockShop()
 {
@@ -97,6 +106,9 @@ struct Shop createAndStockShop()
 	return shop;
 }
 
+//****************************************************************
+// Method to print out data from struct Shop *liveShop
+// This method is reused when calling selecting 1 from the Menu
 
 void printShop(struct Shop* s)
 {
@@ -111,14 +123,11 @@ void printShop(struct Shop* s)
 		printf("-------------\n");
 	}
 }
+//****************************************************************
 
-
-// Read and print customer file
-// Use Week 4 to create reading in customer.csv file.
-// Read in customer orders from a CSV file.
-// 		That file should include all the products they want and the quantity.
-// 		It should also include their name and budget.
-
+//****************************************************************
+// Method to read customer CSV file from file
+// and return
 struct Customer customer_file()
 {
     FILE * fp;
@@ -163,8 +172,12 @@ struct Customer customer_file()
     }
 	return custlist;
 }
+//****************************************************************
 
-
+//****************************************************************
+// Method to recieve customer data from file (struct Customer shoppinglist) 
+// live (struct Customer shoppinglist2)
+// Read and print customer file
 // Edited from 
 // MPP - Week 4 - Shop in C Part 2.mov
 void printCustomer(struct Customer c, struct Shop* s)
@@ -256,19 +269,18 @@ void printCustomer(struct Customer c, struct Shop* s)
 							printf("The shop cannot fill the order of product: %s\n", cusItem);
 							quan = 1;
 					}
-			//////////////////////////////////////////////////////////////////
-
-		
 	}
 
 	//////////////////////////////////////////////////////////////////
-	// If customer has sufficient funds print out and update shop cash	
+	// If customer has sufficient funds print out
 	if (c.budget < total){
 		double insufficient_funds = total - c.budget;
 		printf("\n-------------\n");
 		printf("The total cost of %s shopping is %.2f\n", c.cname, total);
 		printf("%s requires %.2f more for the shopping\n", c.cname, insufficient_funds);
 		printf("------------\n\n");
+	//////////////////////////////////////////////////////////////////
+	// Shopping list that cannot be completed by the shop.
 	}
 	else if(quan == 1){
 		printf("\n-------------\n");
@@ -276,8 +288,11 @@ void printCustomer(struct Customer c, struct Shop* s)
 		printf("\n-------------\n");
 
 	}
+	//////////////////////////////////////////////////////////////////
+	// Shop process the orders of the customer
+	// 
 	else if (c.budget >= total ){
-
+		//////////////////////////////////////////////////////////////////
 		// Update the Stock in the Shop
 		for (int a = 0; a < c.index; a++)
 		{
@@ -292,22 +307,24 @@ void printCustomer(struct Customer c, struct Shop* s)
 				}		
 			}
 		}	
-		
+		//////////////////////////////////////////////////////////////////
 		// Update the cash in the shop based on money received
 		s->cash = s->cash + total;
 		printf("\n-------------\n");
 		printf("The total cost of %s shopping is %.2f\n", c.cname, total);
-
+		//////////////////////////////////////////////////////////////////
+		// Output Change for Customer
 		double change = c.budget - total;
 		printf("You have change of €%.2f\n", change);
 		printf("------------\n\n");
 
 	}
-	//////////////////////////////////////////////////////////////////
+	
 
 }
+//****************************************************************
 
-//////////////////////////////////////////////////////////////////
+//****************************************************************
 // Operate in a live mode, where the user can enter a product by name, specify a quantity, and pay for it. 
 // The user should be able to buy many products in this way.
 // https://www.programiz.com/c-programming/examples/structure-store-information
@@ -332,7 +349,7 @@ struct Customer liveMode(){
 
 	int i;
 	int a = 0; 
-	printf("How many products do you have on your Shopping List: ");
+	printf("How many products do you have on your Shopping List:");
     scanf("%d", &i);
 	
 
@@ -360,16 +377,31 @@ struct Customer liveMode(){
 	return custlist2;
     
 }
+//****************************************************************
 
-
-
-//////////////////////////////////////////////////////////////////
+//****************************************************************
 // https://www.studytonight.com/c/programs/misc/menu-driven-program
 // Add Menu
-// This allows the user to select the following 
-// Stock in Shop and 
-//
-// 
+// The option available:
+// Selecting 1 - Print the Stock and Cash avaiable to the shop 
+
+// Selecting 2 - Read in customer orders from a CSV file.
+// – That file should include all the products they want and the quantity.
+// – It should also include their name and budget
+// - Process the orders of the customer
+// - Know whether or not the shop can fill an order
+// - Thrown an appropriate error.
+// - 
+
+// Selecting 3 - Operate in a live mode, where the user can enter a 
+// product by name, specify a quantity, and pay for it. 
+// The user should be able to buy many products in this way.
+// – It should also include their name and budget
+// - Process the orders of the customer
+// - Know whether or not the shop can fill an order
+// - Thrown an appropriate error.
+
+// Selecting 4 - Exit the Program.
 
 int main()
 {
@@ -427,3 +459,4 @@ int main()
     printf("\n\n\t\t\tCoding in C is Fun!\n\n\n");
     return 0;
 }
+//////////////////////////////////////////////////////////////////
