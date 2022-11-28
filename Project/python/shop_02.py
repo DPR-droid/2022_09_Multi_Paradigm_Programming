@@ -109,6 +109,22 @@ def print_customer(c, s):
         print(f"------------\n\n")
 
     elif (c.budget >= total ):
+
+        for citem in c.shopping_list:
+            #cusItem, cusprice = print_product(citem.product)
+            cusItem = citem.product.name
+            cusQuan = int(citem.quantity)
+        
+        
+            for sitem in s.stock:
+                shopItem  = sitem.product.name
+                shopItemPrice = sitem.product.price
+                if shopItem == cusItem:
+                    sitem.quantity = sitem.quantity - citem.quantity
+
+
+        s.cash = s.cash + total
+        # print(s.cash)
         print(f"\n-------------\n")
         print(f"The total cost of {c.name} shopping is {total}\n\n")
 
