@@ -62,15 +62,17 @@ def print_customer(c, s):
     quan = 0
     total = 0
     
-    for citem in c.shopping_list:
+    for sitem in s.stock:
         #cusItem, cusprice = print_product(citem.product)
-        cusItem = citem.product.name
-        cusQuan = int(citem.quantity)
+        shopItem  = sitem.product.name
+        shopItemPrice = sitem.product.price
         
         
-        for sitem in s.stock:
-            shopItem  = sitem.product.name
-            shopItemPrice = sitem.product.price
+
+        for citem in c.shopping_list:
+            cusItem = citem.product.name
+            cusQuan = int(citem.quantity)
+            
             if shopItem == cusItem:
                 print(f'The cost of {shopItem} in the shop is {shopItemPrice}')
                 subtotal = round((shopItemPrice * cusQuan),2)
@@ -91,8 +93,8 @@ def print_customer(c, s):
                     # print("Test 2")
                     quan = 1
             
-            # elif shopItem != cusItem:
-            #     print(f"The shop does not have the following product:{cusItem}\n")
+            elif cusItem != shopItem:
+                print(f"The shop does not have the following product:{cusItem}\n")
 
        
 
