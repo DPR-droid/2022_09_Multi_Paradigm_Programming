@@ -57,6 +57,7 @@ class TheCustomer:
         with open(file_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             first_row = next(csv_reader)
+            
             c = Customer(first_row[0], float(first_row[1]))
             for row in csv_reader:
                 name = row[0]
