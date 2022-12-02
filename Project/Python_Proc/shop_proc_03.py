@@ -165,9 +165,17 @@ def print_shop(s):
 def liveMode():
     CusName  = input("Enter Your Name : ")
     CusBud  = input("Enter your Budget: ")
-    c = Customer(CusName, float(CusBud))
+    
 
     print("Your name is : {} and you have €{}\n".format(CusName, CusBud)); 
+
+    c = Customer(CusName, float(CusBud))
+
+    ProdList = input("How many products do you have on your Shopping List: ")
+
+
+    ProdName = input("What Product do you Require?")
+
     # p = Product(pname)
     # ps = ProductStock(p, quantity)
     # c.shopping_list.append(ps)
