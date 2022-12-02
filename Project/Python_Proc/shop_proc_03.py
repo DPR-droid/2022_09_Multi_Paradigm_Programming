@@ -61,8 +61,8 @@ def print_customer(c, s):
 
     quan = 0
     total = 0
-    # print(c.__dict__)
-    # print(c.shopping_list)
+    #print(c.__dict__)
+    print(c.shopping_list[0])
     # print(s.stock)
     custlist = []
     shoplist = []
@@ -103,7 +103,7 @@ def print_customer(c, s):
                     quan = 1
             
 
-    # print(custlist) 
+    print(custlist) 
     # print(shoplist) 
     notinstock = set(custlist) - set(shoplist)
     my_string = ','.join(map(str, notinstock))
@@ -163,6 +163,15 @@ def print_shop(s):
         print(f'The Shop has {item.quantity} of the above')
 
 def liveMode():
+    CusName  = input("Enter Your Name : ")
+    CusBud  = input("Enter your Budget: ")
+    c = Customer(CusName, float(CusBud))
+
+    print("Your name is : {} and you have €{}\n".format(CusName, CusBud)); 
+    # p = Product(pname)
+    # ps = ProductStock(p, quantity)
+    # c.shopping_list.append(ps)
+
 
     return
 
@@ -191,7 +200,7 @@ def main():
 
         elif (choice == "3"): 
             c = liveMode()
-            print_customer(c, s)
+            # print_customer(c, s)
             # break
 
         elif (choice == "4"): 
