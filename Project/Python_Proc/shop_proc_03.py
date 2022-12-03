@@ -106,7 +106,7 @@ def print_customer(c, s):
     print(custlist) 
     # print(shoplist) 
     notinstock = set(custlist) - set(shoplist)
-    my_string = ','.join(map(str, notinstock))
+    # my_string = ','.join(map(str, notinstock))
     # print(*notinstock)
 
     if (quan == 1):
@@ -142,8 +142,8 @@ def print_customer(c, s):
                     subtotal = round((shopItemPrice * cusQuan),2)
                     print(f'The cost of {cusQuan} {cusItem} in the shop is %.2f\n' % subtotal)
 
-        if my_string == "":
-            print(f"The shop does not have the following product: {my_string}\n")
+        for nis in notinstock:
+            print(f"The shop does not have the following product: {nis}\n")
 
         s.cash = s.cash + total
         # print(s.cash)
@@ -167,21 +167,28 @@ def liveMode():
     CusBud  = input("Enter your Budget: ")
     
 
+
     print("Your name is : {} and you have €{}\n".format(CusName, CusBud)); 
 
     c = Customer(CusName, float(CusBud))
 
-    ProdList = input("How many products do you have on your Shopping List: ")
+    ProdList = int(input("How many products do you have on your Shopping List: "))
+
+    i = 0
+
+    while i < ProdList:
 
 
-    pname = input("What Product do you Require?")
+        pname = input("What Product do you Require?")
 
-    quantity = float(input("How many of {} do you require? ".format(pname)))
+        quantity = float(input("How many of {} do you require? ".format(pname)))
 
-    p = Product(pname)
-    ps = ProductStock(p, quantity)
-    c.shopping_list.append(ps)
+        p = Product(pname)
+        ps = ProductStock(p, quantity)
+        c.shopping_list.append(ps)
 
+
+        i += 1
 
     return c
 
