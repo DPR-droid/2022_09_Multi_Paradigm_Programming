@@ -142,8 +142,8 @@ def print_customer(c, s):
                     subtotal = round((shopItemPrice * cusQuan),2)
                     print(f'The cost of {cusQuan} {cusItem} in the shop is %.2f\n' % subtotal)
 
-
-        print(f"The shop does not have the following product: {my_string}\n")
+        if my_string == "":
+            print(f"The shop does not have the following product: {my_string}\n")
 
         s.cash = s.cash + total
         # print(s.cash)
@@ -174,14 +174,16 @@ def liveMode():
     ProdList = input("How many products do you have on your Shopping List: ")
 
 
-    ProdName = input("What Product do you Require?")
+    pname = input("What Product do you Require?")
 
-    # p = Product(pname)
-    # ps = ProductStock(p, quantity)
-    # c.shopping_list.append(ps)
+    quantity = float(input("How many of {} do you require? ".format(pname)))
+
+    p = Product(pname)
+    ps = ProductStock(p, quantity)
+    c.shopping_list.append(ps)
 
 
-    return
+    return c
 
 
 # Main
@@ -208,7 +210,7 @@ def main():
 
         elif (choice == "3"): 
             c = liveMode()
-            # print_customer(c, s)
+            print_customer(c, s)
             # break
 
         elif (choice == "4"): 
