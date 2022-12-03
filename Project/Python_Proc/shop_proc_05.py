@@ -225,14 +225,14 @@ def main():
             # break
 
         elif (choice == "5"): 
-            
+            print("\n\n\t\t\tExit the Python Proc Shop\n")
             break
 
         else:
             # If user does not choose the correct input
             # Print a message to the screen 
             # Returns user to main menu 
-            print("\n***Please choose a number from above list or to exit press 4***\n")
+            print("\n***Please choose a number from above list or to exit press 5***\n")
 
 # Displays a main menu for User
 def display_menu():
@@ -240,7 +240,7 @@ def display_menu():
     print("1. Stock in Shop ")
     print("2. Customer Shopping List")
     print("3. Live mode")
-    print("4. Read in customer Shopping List")
+    print("4. File Read: Customer Shopping List")
     print("5. Exit\n\n")
 
 
