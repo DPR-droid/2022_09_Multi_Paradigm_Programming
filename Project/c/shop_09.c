@@ -62,15 +62,15 @@ void printProduct(struct Product p)
 //****************************************************************
 // Create Stock from CSV file
 // Method to import data from CSV file
-
-struct Shop createAndStockShop()
+// https://stackoverflow.com/questions/2175574/pass-path-to-file-filename-as-argument-to-a-function-that-prints-the-file-to-s
+struct Shop createAndStockShop(const char* str)
 {
     FILE * fp;
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
 
-    fp = fopen("../stock.csv", "r");
+    fp = fopen(str, "r");
     if (fp == NULL)
         exit(EXIT_FAILURE);
 
@@ -114,7 +114,7 @@ void printShop(struct Shop* s)
 {
 	
 	printf("\n\n*******************\n");
-	printf("Shop has %.2f in cash\n", s->cash);
+	printf("Shop has €%.2f in cash\n", s->cash);
 	printf("******************\n");
 	for (int i = 0; i < s->index; i++)
 	{
@@ -128,14 +128,15 @@ void printShop(struct Shop* s)
 //****************************************************************
 // Method to read customer CSV file from file
 // and return
-struct Customer customer_file()
+// https://stackoverflow.com/questions/2175574/pass-path-to-file-filename-as-argument-to-a-function-that-prints-the-file-to-s
+struct Customer customer_file(const char* str)
 {
     FILE * fp;
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
 
-    fp = fopen("../customer.csv", "r");
+    fp = fopen(str, "r");
     if (fp == NULL)
         exit(EXIT_FAILURE);
 
@@ -183,7 +184,7 @@ struct Customer customer_file()
 void printCustomer(struct Customer c, struct Shop* s)
 {
 	printf("\n\n#### Customer Shopping List ####\n\n");
-	printf("Customer name is %s and the budget for shopping is %.2f\n", c.cname, c.budget);
+	printf("Customer name is %s and the budget for shopping is €%.2f\n", c.cname, c.budget);
 	printf("-------------\n\n");
 	
 	// Set the variable for the total cost of Customer bill.
@@ -223,9 +224,9 @@ void printCustomer(struct Customer c, struct Shop* s)
 					res = 1;
 					//printf("The output 2 name is %d\n", strcmp(cusItem, s->stock[b].product.name));	
 					// MPP - Week 8 - Shop in C - Processing the Order.mov
-					printf("The cost of %s in the shop is %.2f\n", c.shoppingList[a].product.name, s->stock[b].product.price);
+					// printf("The cost of %s in the shop is €%.2f\n", c.shoppingList[a].product.name, s->stock[b].product.price);
 					double subtotal = c.shoppingList[a].quantity * s->stock[b].product.price;
-					printf("The cost of %d %s in the shop is %.2f\n", c.shoppingList[a].quantity, c.shoppingList[a].product.name, subtotal);
+					// printf("The cost of %d %s in the shop is €%.2f\n\n", c.shoppingList[a].quantity, c.shoppingList[a].product.name, subtotal);
 					
 					
 					//////////////////////////////////////////////////////////////////
@@ -255,11 +256,7 @@ void printCustomer(struct Customer c, struct Shop* s)
 			//////////////////////////////////////////////////////////////////
 			// If item not in shop or cannot fill order print to screen
 			// 		Thrown an appropriate error.
-			if (res == 0)
-					{
-							printf("The shop does not have the following product: %s\n", cusItem);
-					}
-			else if (res == 2)
+			if (res == 2)
 					{
 							printf("The shop is out of stock on the following product: %s\n", cusItem);		
 							quan = 1;					
@@ -272,20 +269,21 @@ void printCustomer(struct Customer c, struct Shop* s)
 	}
 
 	//////////////////////////////////////////////////////////////////
-	// If customer has sufficient funds print out
-	if (c.budget < total){
+	// Shopping list that cannot be completed by the shop.
+	
+	if(quan == 1){
+		printf("\n-------------\n");
+		printf("\nUnfortunately the shop cannot fill you order\n");
+		printf("\n-------------\n");
+	}
+	//////////////////////////////////////////////////////////////////
+	// If customer has sufficient funds print out	
+	else if (c.budget < total){
 		double insufficient_funds = total - c.budget;
 		printf("\n-------------\n");
-		printf("The total cost of %s shopping is %.2f\n", c.cname, total);
+		printf("The total cost of %s shopping is €%.2f\n", c.cname, total);
 		printf("%s requires %.2f more for the shopping\n", c.cname, insufficient_funds);
 		printf("------------\n\n");
-	//////////////////////////////////////////////////////////////////
-	// Shopping list that cannot be completed by the shop.
-	}
-	else if(quan == 1){
-		printf("\n-------------\n");
-		printf("Unfortunately the shop cannot fill you order\n");
-		printf("\n-------------\n");
 
 	}
 	//////////////////////////////////////////////////////////////////
@@ -295,23 +293,62 @@ void printCustomer(struct Customer c, struct Shop* s)
 		//////////////////////////////////////////////////////////////////
 		// Update the Stock in the Shop
 		for (int a = 0; a < c.index; a++)
-		{
+	{
+		
+		// https://www.geeksforgeeks.org/strcmp-in-c-cpp/
+		// https://stackoverflow.com/questions/48133294/c-string-comparison-in-an-if-statement-doesnt-work
+		// Set Check for item in shop
+		int res = 0;
 
+		//printf("The Customer wants %d of %s\n", c.shoppingList[i].quantity, c.shoppingList[i].product.name);
+		// double cusBud = c.budget;
 		char *cusItem = c.shoppingList[a].product.name;
+		// int cusQuan = c.shoppingList[a].quantity;
 
+		//printf("The output 1 name is %d, for %s\n", res, cusItem);
+
+		// printf("The product name is  %s\n", c.shoppingList[a].product.name);
+		// Edited from 
+		// MPP - Week 8 - C - Passing Arguments As Pointer.mov
+		// ProductStock.c
 		for (int b = 0; b < s->index; b++)
 			{
+
+				//printf("The output 1 name is %d\n", strcmp(cusItem, s->stock[b].product.name));	
+				
 				if (strcmp(s->stock[b].product.name, cusItem ) == 0)
 				{
+					// If item in shop set res to 1
+					res = 1;
+					//printf("The output 2 name is %d\n", strcmp(cusItem, s->stock[b].product.name));	
+					// MPP - Week 8 - Shop in C - Processing the Order.mov
 					s->stock[b].quantity =  s->stock[b].quantity - c.shoppingList[a].quantity;
+					double subtotal = c.shoppingList[a].quantity * s->stock[b].product.price;
+					printf("The cost of %s in the shop is €%.2f\n", c.shoppingList[a].product.name, s->stock[b].product.price);
+					printf("The cost of %d %s in the shop is €%.2f\n\n", c.shoppingList[a].quantity, c.shoppingList[a].product.name, subtotal);
+					
+					
+					//////////////////////////////////////////////////////////////////
+					// Know whether or not the shop can fill an order
+					
+					//////////////////////////////////////////////////////////////////
 				}		
+
 			}
-		}	
+
+			//////////////////////////////////////////////////////////////////
+			// If item not in shop or cannot fill order print to screen
+			// 		Thrown an appropriate error.
+			if (res == 0)
+					{
+							printf("The shop does not have the following product: %s\n", cusItem);
+					}
+	}	
 		//////////////////////////////////////////////////////////////////
 		// Update the cash in the shop based on money received
 		s->cash = s->cash + total;
 		printf("\n-------------\n");
-		printf("The total cost of %s shopping is %.2f\n", c.cname, total);
+		printf("The total cost of %s shopping is €%.2f\n", c.cname, total);
 		//////////////////////////////////////////////////////////////////
 		// Output Change for Customer
 		double change = c.budget - total;
@@ -349,7 +386,7 @@ struct Customer liveMode(){
 
 	int i;
 	int a = 0; 
-	printf("How many products do you have on your Shopping List:");
+	printf("How many products do you have on your Shopping List: ");
     scanf("%d", &i);
 	
 
@@ -361,7 +398,7 @@ struct Customer liveMode(){
   		scanf("%[^\n]%*c",pname);
 
 		int quantity;
-		printf("\nHow many of %s do you require? ", pname);
+		printf("How many of %s do you require? ", pname);
 		scanf("%d", &quantity);
 
 		printf("The product is: %s and you want %d\n", pname, quantity); 
@@ -411,7 +448,7 @@ int main()
 
 	// The shop CSV should hold the initial cash value for the shop.
 	// Create the Shop Stock from CSV file.
-	struct Shop shop = createAndStockShop();
+	struct Shop shop = createAndStockShop("../stock.csv");
 	// Create a live copy of the shop
 	struct Shop* liveShop = &shop;
 
@@ -439,7 +476,7 @@ int main()
 				{
 				//struct Shop shop = createAndStockShop();
 				//customer_file();
-				struct Customer shoppinglist = customer_file();
+				struct Customer shoppinglist = customer_file("../customer.csv");
 				printCustomer(shoppinglist, liveShop);
 				}
                 break;

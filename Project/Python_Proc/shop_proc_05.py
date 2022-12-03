@@ -5,7 +5,7 @@ import csv
 @dataclass
 class Product:
     name: str
-    price: float = 0.0
+    price: float = 0.00
 
 @dataclass 
 class ProductStock:
@@ -14,13 +14,13 @@ class ProductStock:
 
 @dataclass 
 class Shop:
-    cash: float = 0.0
+    cash: float = 0.00
     stock: List[ProductStock] = field(default_factory=list)
 
 @dataclass
 class Customer:
     name: str = ""
-    budget: float = 0.0
+    budget: float = 0.00
     shopping_list: List[ProductStock] = field(default_factory=list)
 
 def create_and_stock_shop(file_path):
@@ -47,23 +47,21 @@ def read_customer(file_path):
             p = Product(name)
             ps = ProductStock(p, quantity)
             c.shopping_list.append(ps)
-        print("****************************")
-        # print(c)
         return c 
         
 
 def print_product(p):
-    print(f'\nPRODUCT NAME: {p.name} \nPRODUCT PRICE: {p.price}')
+    print(f'PRODUCT NAME: {p.name} \nPRODUCT PRICE: €%.2f' % (p.price))
     return p.name, p.price
 
 def print_customer(c, s):
-    print(f'CUSTOMER NAME: {c.name} \nCUSTOMER BUDGET: {c.budget}')
+    print(f'\n\n#### Customer Shopping List ####\n')
+    print(f'Customer name is {c.name} and the budget for shopping is €%.2f' % (c.budget))
+    print(f'-------------\n')
 
     quan = 0
     total = 0
-    #print(c.__dict__)
-    print(c.shopping_list[0])
-    # print(s.stock)
+   
     custlist = []
     shoplist = []
     
@@ -76,38 +74,31 @@ def print_customer(c, s):
                 
         
         for sitem in s.stock:
-            #cusItem, cusprice = print_product(citem.product)
             shopItem  = sitem.product.name
             shopItemPrice = sitem.product.price
         
             if shopItem == cusItem:
                 
                 subtotal = round((shopItemPrice * cusQuan),2)
-                # print(f'The cost of {cusQuan} {cusItem} in the shop is %.2f\n' % subtotal)
 
                 shoplist.append(shopItem)
 
                 if (sitem.quantity >= citem.quantity):
-                    # print(sitem.quantity)
 
                     total = total + subtotal
 
-                elif (sitem.quantity == 0):
-                    print(f"The shop does not have the following product:{cusItem}\n")
-                    # print("Test 1")
-                    quan = 1
+                # elif (sitem.quantity == 0):
+                #     print(f"The shop does not have the following product:{cusItem}\n")
+                #     quan = 1
 
                 elif (sitem.quantity < citem.quantity):
                     print(f"The shop cannot fill the order of product: {cusItem}\n")
-                    # print("Test 2")
                     quan = 1
             
 
-    print(custlist) 
-    # print(shoplist) 
+     
     notinstock = set(custlist) - set(shoplist)
-    # my_string = ','.join(map(str, notinstock))
-    # print(*notinstock)
+   
 
     if (quan == 1):
         print(f"\n-------------\n")
@@ -117,10 +108,10 @@ def print_customer(c, s):
 
     elif (c.budget < total):
         insufficient_funds = total - c.budget
-        print(f"\n-------------\n")
-        print(f"The total cost of {c.name} shopping is {total}\n\n")
-        print(f"{c.name} requires {insufficient_funds} more for the shopping\n")
-        print(f"------------\n\n")
+        print(f"\n-------------")
+        print(f"The total cost of {c.name} shopping is €%.2f" % (total))
+        print(f"{c.name} requires €%.2f more for the shopping"% (insufficient_funds))
+        print(f"------------")
         return
 
     elif (c.budget >= total ):
@@ -138,31 +129,33 @@ def print_customer(c, s):
 
                 if shopItem == cusItem:
                     sitem.quantity = sitem.quantity - citem.quantity
-                    print(f'The cost of {shopItem} in the shop is {shopItemPrice}')
+                    print(f'The cost of {shopItem} in the shop is €%.2f' % (shopItemPrice))
                     subtotal = round((shopItemPrice * cusQuan),2)
-                    print(f'The cost of {cusQuan} {cusItem} in the shop is %.2f\n' % subtotal)
+                    print(f'The cost of {cusQuan} {cusItem} in the shop is €%.2f\n' % subtotal)
 
         for nis in notinstock:
-            print(f"The shop does not have the following product: {nis}\n")
+            print(f"The shop does not have the following product: {nis}")
 
         s.cash = s.cash + total
         # print(s.cash)
-        print(f"\n-------------\n")
-        print(f"The total cost of {c.name} shopping is {total}\n\n")
+        print(f"\n-------------")
+        print(f'The total cost of {c.name} shopping is €%.2f' % (total))
 
         change = c.budget - total
-        print(f"You have change of €{change}\n")
-        print(f"------------\n\n")
+        print(f'You have change of €%.2f' % (change))
+        print(f"------------\n")
 
 
         
 def print_shop(s):
     print(f'\n\n*******************')
-    print(f'Shop has {s.cash} in cash')
+    print(f'Shop has €%.2f in cash' % (s.cash))
     print(f'******************')
     for item in s.stock:
+        print(f'\nThe shop has %0.0f of:' % (item.quantity))
         print_product(item.product)
-        print(f'The Shop has {item.quantity} of the above')
+        print(f'-------------')
+        
 
 def liveMode():
     CusName  = input("Enter Your Name : ")
@@ -170,7 +163,7 @@ def liveMode():
     
 
 
-    print("Your name is : {} and you have €{}\n".format(CusName, CusBud)); 
+    print("Your name is : {} and you have €{}".format(CusName, CusBud)); 
 
     c = Customer(CusName, float(CusBud))
 
@@ -181,7 +174,7 @@ def liveMode():
     while i < ProdList:
 
 
-        pname = input("What Product do you Require?")
+        pname = input("\nWhat Product do you Require? ")
 
         quantity = float(input("How many of {} do you require? ".format(pname)))
 
@@ -189,6 +182,7 @@ def liveMode():
         ps = ProductStock(p, quantity)
         c.shopping_list.append(ps)
 
+        print(f'The product is: {pname} and you want %.0f ' % (quantity))
 
         i += 1
 
@@ -221,8 +215,16 @@ def main():
             c = liveMode()
             print_customer(c, s)
             # break
-
+        
         elif (choice == "4"): 
+            filename = input("What is the name of your shopping list? ")
+            filepath = str("../" + filename)
+            # print(filepath)
+            c = read_customer(filepath)
+            print_customer(c, s)
+            # break
+
+        elif (choice == "5"): 
             
             break
 
@@ -238,7 +240,8 @@ def display_menu():
     print("1. Stock in Shop ")
     print("2. Customer Shopping List")
     print("3. Live mode")
-    print("4. Exit\n\n")
+    print("4. Read in customer Shopping List")
+    print("5. Exit\n\n")
 
 
 if __name__ == "__main__":
