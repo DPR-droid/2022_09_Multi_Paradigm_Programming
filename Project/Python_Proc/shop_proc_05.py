@@ -246,6 +246,6 @@ def display_menu():
 
 if __name__ == "__main__":
 
-    print("\n\n\t\tWelcome to the P Proc Shop")
+    print("\n\n\t\tWelcome to the Python Proc Shop")
 
     main()
