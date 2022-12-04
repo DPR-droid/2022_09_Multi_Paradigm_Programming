@@ -82,6 +82,9 @@ class Customer:
 
     def calculate_costs(self, price_list):
 
+        quan = 0
+        total = 0
+
         custlist = []
         shoplist = []
                 
