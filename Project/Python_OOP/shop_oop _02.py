@@ -6,8 +6,9 @@ class Product:
         self.name = name
         self.price = price
     
-    def __repr__(self):
-        return f'PRODUCT NAME: {self.name}\nPRODUCT PRICE: €%.2f\n-------------\n\n' % self.price
+    # def __repr__(self):
+    #     #return f'PRODUCT NAME: {self.name}\nPRODUCT PRICE: €%.2f\n-------------\n\n' % self.price
+    #     return self.name, self.price
         
 
 class ProductStock:
@@ -25,8 +26,8 @@ class ProductStock:
     def cost(self):
         return self.unit_price() * self.quantity
         
-    def __repr__(self):
-        return f"{self.product}The shop has {self.quantity} of:"
+    # def __repr__(self):
+    #     return f"{self.product}The shop has {self.quantity} of:"
         
 
 
@@ -72,37 +73,45 @@ class Customer:
                 p = Product(name)
                 ps = ProductStock(p, quantity)
                 self.shopping_list.append(ps) 
-                
+
+    def print_customer(self):
+        print(f'\n\n#### Customer Shopping List ####\n')
+        print(f'Customer name is {self.name} and the budget for shopping is €%.2f' % (self.budget))
+        print(f'-------------\n')
+
+
     def calculate_costs(self, price_list):
-        for shop_item in price_list:
-            for list_item in self.shopping_list:
-                if (list_item.name() == shop_item.name()):
-                    list_item.product.price = shop_item.unit_price()
-    
-    def order_cost(self):
-        cost = 0
-        
-        for list_item in self.shopping_list:
-            cost += list_item.cost()
-        
-        return cost
-    
-    def __repr__(self):
-        
-        str = f"{self.name} wants to buy"
-        for item in self.shopping_list:
-            cost = item.cost()
-            str += f"\n{item}"
-            if (cost == 0):
-                str += f" {self.name} doesn't know how much that costs :("
-            else:
-                str += f" COST: {cost}"
+
+        custlist = []
+        shoplist = []
                 
-        str += f"\nThe cost would be: {self.order_cost()}, he would have {self.budget - self.order_cost()} left"
-        return str 
+        for shop_item in price_list:
+            #print(f'Part 1 {shop_item.product.name}') 
+            shoplist.append(shop_item.product.name)
+
+            for list_item in self.shopping_list:
+
+                #print(f'Part 2 {list_item.name()}') 
+                custlist.append(list_item.name())
+
+                if (list_item.name() == shop_item.name()):
+
+
+                    print(f'The cost of {shop_item.product.name} in the shop is €%.2f' % (shop_item.product.price))
+                    subtotal = round((shop_item.product.price * list_item.quantity),2)
+                    print(f'The cost of {list_item.quantity} {shop_item.product.name} in the shop is €%.2f\n' % subtotal)
+
+        # print(custlist)
+        # print(shoplist)
+
+        notinstock = set(custlist) - set(shoplist)
+
+        for nis in notinstock:
+            print(f"The shop does not have the following product: {nis}")
+
         
-
-
+    
+                    
 # Main
 def main():
 
@@ -118,8 +127,8 @@ def main():
    
         elif (choice == "2"):
             c = Customer("../customer.csv")
+            Customer.print_customer(c)
             c.calculate_costs(s.stock)
-            print(c)
             # break
 
         elif (choice == "3"): 
@@ -129,7 +138,8 @@ def main():
             filename = input("What is the name of your shopping list? ")
             filepath = str("../" + filename)
             c = Customer(filepath)
-            print(c)
+            Customer.print_customer(c)
+            c.calculate_costs(s.stock)
 
         elif (choice == "5"): 
             print("\n\n\t\t\tExit the Python OOP Shop\n")
