@@ -94,7 +94,7 @@ class Customer:
         return str
 
 
-    def calculate_costs(self, price_list):
+    def calculate_costs(self, shop):
 
         quan = 0
         total = 0
@@ -102,7 +102,7 @@ class Customer:
         custlist = []
         shoplist = []
                 
-        for shop_item in price_list:
+        for shop_item in shop.stock:
             #print(f'Part 1 {shop_item.product.name}') 
             shoplist.append(shop_item.product.name)
 
@@ -147,7 +147,7 @@ class Customer:
 
         elif (self.budget >= total ):
 
-            for shop_item in price_list:
+            for shop_item in shop.stock:
             
                 for list_item in self.shopping_list:
 
@@ -161,8 +161,6 @@ class Customer:
             
             print(self.checkstock(custlist, shoplist))
 
-            print(Shop.shopcash)
-            
             #     for sitem in s.stock:
             #         shopItem  = sitem.product.name
             #         shopItemPrice = sitem.product.price
@@ -181,12 +179,18 @@ class Customer:
             print(f'You have change of €%.2f' % (change))
             print(f"------------\n")
 
+            print(shop.cash)
 
+
+    # https://pynative.com/python-class-method/
+    @classmethod
     def liveMode(self):
-        self.live_shopping_list = []
+        self.shopping_list_live = []
         CusName  = input("Enter Your Name : ")
         CusBud  = input("Enter your Budget: ")
         
+        self.name = CusName
+        self.budget = float(CusBud)
         print("Your name is : {} and you have €{}".format(CusName, CusBud))
 
         ProdList = int(input("How many products do you have on your Shopping List: "))
@@ -202,11 +206,12 @@ class Customer:
 
             p = Product(pname)
             ps = ProductStock(p, quantity)
-            self.live_shopping_list.append(ps) 
+            self.shopping_list_live.append(ps) 
 
             print(f'The product is: {pname} and you want %.0f ' % (quantity))
 
             i += 1
+        return self.shopping_list_live
 
 
     
@@ -227,19 +232,21 @@ def main():
         elif (choice == "2"):
             c = Customer("../customer.csv")
             Customer.print_customer(c)
-            c.calculate_costs(s.stock)
+            c.calculate_costs(s)
 
         elif (choice == "3"): 
-            c = Customer.liveMode
-            Customer.print_customer(c)
-            c.calculate_costs(s.stock)
+            l = Customer.liveMode()
+            print(l)
+            #Customer.print_customer(l)
+            
+            # c.calculate_costs(s.stock)
         
         elif (choice == "4"): 
             filename = input("What is the name of your shopping list? ")
             filepath = str("../" + filename)
             c = Customer(filepath)
             Customer.print_customer(c)
-            c.calculate_costs(s.stock)
+            c.calculate_costs(s)
 
         elif (choice == "5"): 
             print("\n\n\t\t\tExit the Python OOP Shop\n")
