@@ -93,7 +93,7 @@ class Customer:
 
         return str
 
-
+    @classmethod
     def calculate_costs(self, shop):
 
         quan = 0
@@ -182,9 +182,8 @@ class Customer:
             print(shop.cash)
 
 
-    # https://pynative.com/python-class-method/
-    @classmethod
-    def liveMode(self):
+class Live:
+    def __init__(self):
         self.shopping_list_live = []
         CusName  = input("Enter Your Name : ")
         CusBud  = input("Enter your Budget: ")
@@ -199,7 +198,6 @@ class Customer:
 
         while i < ProdList:
 
-
             pname = input("\nWhat Product do you Require? ")
 
             quantity = float(input("How many of {} do you require? ".format(pname)))
@@ -211,7 +209,6 @@ class Customer:
             print(f'The product is: {pname} and you want %.0f ' % (quantity))
 
             i += 1
-        return self.shopping_list_live
 
 
     
@@ -235,11 +232,12 @@ def main():
             c.calculate_costs(s)
 
         elif (choice == "3"): 
-            l = Customer.liveMode()
-            print(l)
-            #Customer.print_customer(l)
+            l = Live()
+            #print(l)
+            Customer.print_customer(l)
+            #Customer.calculate_costs(l,s)
             
-            # c.calculate_costs(s.stock)
+            
         
         elif (choice == "4"): 
             filename = input("What is the name of your shopping list? ")
