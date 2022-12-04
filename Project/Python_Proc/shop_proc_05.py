@@ -87,10 +87,6 @@ def print_customer(c, s):
 
                     total = total + subtotal
 
-                # elif (sitem.quantity == 0):
-                #     print(f"The shop does not have the following product:{cusItem}\n")
-                #     quan = 1
-
                 elif (sitem.quantity < citem.quantity):
                     print(f"The shop cannot fill the order of product: {cusItem}\n")
                     quan = 1
@@ -163,7 +159,7 @@ def liveMode():
     
 
 
-    print("Your name is : {} and you have €{}".format(CusName, CusBud)); 
+    print("Your name is : {} and you have €{}".format(CusName, CusBud))
 
     c = Customer(CusName, float(CusBud))
 

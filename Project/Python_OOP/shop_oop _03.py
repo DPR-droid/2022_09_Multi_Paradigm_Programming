@@ -54,6 +54,9 @@ class Shop:
             # print_product(item.product)
             print(f'PRODUCT NAME: {item.product.name} \nPRODUCT PRICE: €%.2f' % (item.product.price))
             print(f'-------------')
+
+    def shopcash(self):
+        return self.cash
             
 
 
@@ -80,6 +83,17 @@ class Customer:
         print(f'-------------\n')
 
 
+
+    def checkstock(self, custlist, shoplist):
+        notinstock = set(custlist) - set(shoplist)
+        str = ""
+        for nis in notinstock:
+            # print(f"The shop does not have the following product: {nis}")
+            str += f"The shop does not have the following product: {nis}\n"
+
+        return str
+
+
     def calculate_costs(self, price_list):
 
         quan = 0
@@ -100,19 +114,101 @@ class Customer:
                 if (list_item.name() == shop_item.name()):
 
 
-                    print(f'The cost of {shop_item.product.name} in the shop is €%.2f' % (shop_item.product.price))
+
+                    # print(f'The cost of {shop_item.product.name} in the shop is €%.2f' % (shop_item.product.price))
                     subtotal = round((shop_item.product.price * list_item.quantity),2)
-                    print(f'The cost of {list_item.quantity} {shop_item.product.name} in the shop is €%.2f\n' % subtotal)
+                    # print(f'The cost of {list_item.quantity} {shop_item.product.name} in the shop is €%.2f\n' % subtotal)
 
-        # print(custlist)
-        # print(shoplist)
 
-        notinstock = set(custlist) - set(shoplist)
+                    if (shop_item.quantity >= list_item.quantity):
+                        # print(shop_item.quantity )
 
-        for nis in notinstock:
-            print(f"The shop does not have the following product: {nis}")
+                        total = total + subtotal
 
+                    elif (shop_item.quantity < list_item.quantity):
+                        print(f"The shop cannot fill the order of product: {list_item.name()}\n")
+                        quan = 1
+
+
+
+        if (quan == 1):
+            print(f"\n-------------\n")
+            print(f"Unfortunately the shop cannot fill you order\n")
+            print(f"------------\n\n")
+            return
+
+        elif (self.budget < total):
+            insufficient_funds = total - self.budget
+            print(f"\n-------------")
+            print(f"The total cost of {self.name} shopping is €%.2f" % (total))
+            print(f"{self.name} requires €%.2f more for the shopping"% (insufficient_funds))
+            print(f"------------")
+            return
+
+        elif (self.budget >= total ):
+
+            for shop_item in price_list:
+            
+                for list_item in self.shopping_list:
+
+                    if (list_item.name() == shop_item.name()):
+                        cusQuan = int(list_item.quantity)
+
+
+                        print(f'The cost of {shop_item.product.name} in the shop is €%.2f' % (shop_item.product.price))
+                        subtotal = round((shop_item.product.price * list_item.quantity),2)
+                        print(f'The cost of {cusQuan} {shop_item.product.name} in the shop is €%.2f\n' % subtotal)
+            
+            print(self.checkstock(custlist, shoplist))
+
+            print(Shop.shopcash)
+            
+            #     for sitem in s.stock:
+            #         shopItem  = sitem.product.name
+            #         shopItemPrice = sitem.product.price
+                    
+
+            #         if shopItem == cusItem:
+            #             sitem.quantity = sitem.quantity - citem.quantity
+            #             print(f'The cost of {shopItem} in the shop is €%.2f' % (shopItemPrice))
+            #             subtotal = round((shopItemPrice * cusQuan),2)
+            #             print(f'The cost of {cusQuan} {cusItem} in the shop is €%.2f\n' % subtotal)
+
+            print(f"\n-------------")
+            print(f'The total cost of {self.name} shopping is €%.2f' % (total))
+
+            change = self.budget - total
+            print(f'You have change of €%.2f' % (change))
+            print(f"------------\n")
+
+
+    def liveMode(self):
+        self.live_shopping_list = []
+        CusName  = input("Enter Your Name : ")
+        CusBud  = input("Enter your Budget: ")
         
+        print("Your name is : {} and you have €{}".format(CusName, CusBud))
+
+        ProdList = int(input("How many products do you have on your Shopping List: "))
+
+        i = 0
+
+        while i < ProdList:
+
+
+            pname = input("\nWhat Product do you Require? ")
+
+            quantity = float(input("How many of {} do you require? ".format(pname)))
+
+            p = Product(pname)
+            ps = ProductStock(p, quantity)
+            self.live_shopping_list.append(ps) 
+
+            print(f'The product is: {pname} and you want %.0f ' % (quantity))
+
+            i += 1
+
+
     
                     
 # Main
@@ -132,10 +228,11 @@ def main():
             c = Customer("../customer.csv")
             Customer.print_customer(c)
             c.calculate_costs(s.stock)
-            # break
 
         elif (choice == "3"): 
-            break
+            c = Customer.liveMode
+            Customer.print_customer(c)
+            c.calculate_costs(s.stock)
         
         elif (choice == "4"): 
             filename = input("What is the name of your shopping list? ")
