@@ -55,8 +55,8 @@ class Shop:
             print(f'PRODUCT NAME: {item.product.name} \nPRODUCT PRICE: €%.2f' % (item.product.price))
             print(f'-------------')
 
-    def shopcash(self):
-        return self.cash
+    # def shopcash(self):
+    #     return self.cash
             
 
 
@@ -93,7 +93,7 @@ class Customer:
 
         return str
 
-    @classmethod
+
     def calculate_costs(self, shop):
 
         quan = 0
@@ -113,12 +113,7 @@ class Customer:
 
                 if (list_item.name() == shop_item.name()):
 
-
-
-                    # print(f'The cost of {shop_item.product.name} in the shop is €%.2f' % (shop_item.product.price))
                     subtotal = round((shop_item.product.price * list_item.quantity),2)
-                    # print(f'The cost of {list_item.quantity} {shop_item.product.name} in the shop is €%.2f\n' % subtotal)
-
 
                     if (shop_item.quantity >= list_item.quantity):
                         # print(shop_item.quantity )
@@ -153,25 +148,14 @@ class Customer:
 
                     if (list_item.name() == shop_item.name()):
                         cusQuan = int(list_item.quantity)
-
+                        
+                        shop_item.quantity = shop_item.quantity - list_item.quantity
 
                         print(f'The cost of {shop_item.product.name} in the shop is €%.2f' % (shop_item.product.price))
                         subtotal = round((shop_item.product.price * list_item.quantity),2)
                         print(f'The cost of {cusQuan} {shop_item.product.name} in the shop is €%.2f\n' % subtotal)
             
-            print(self.checkstock(custlist, shoplist))
-
-            #     for sitem in s.stock:
-            #         shopItem  = sitem.product.name
-            #         shopItemPrice = sitem.product.price
-                    
-
-            #         if shopItem == cusItem:
-            #             sitem.quantity = sitem.quantity - citem.quantity
-            #             print(f'The cost of {shopItem} in the shop is €%.2f' % (shopItemPrice))
-            #             subtotal = round((shopItemPrice * cusQuan),2)
-            #             print(f'The cost of {cusQuan} {cusItem} in the shop is €%.2f\n' % subtotal)
-
+            shop.cash = shop.cash + total
             print(f"\n-------------")
             print(f'The total cost of {self.name} shopping is €%.2f' % (total))
 
@@ -179,40 +163,37 @@ class Customer:
             print(f'You have change of €%.2f' % (change))
             print(f"------------\n")
 
-            print(shop.cash)
+    
+    def liveMode():
 
-
-class Live:
-    def __init__(self):
-        self.shopping_list_live = []
         CusName  = input("Enter Your Name : ")
         CusBud  = input("Enter your Budget: ")
-        
-        self.name = CusName
-        self.budget = float(CusBud)
-        print("Your name is : {} and you have €{}".format(CusName, CusBud))
+        # open the file in the write mode
+        with open('../livemode.csv', 'w', encoding='UTF8', newline='') as f:
 
-        ProdList = int(input("How many products do you have on your Shopping List: "))
+            writer = csv.writer(f)
+            # write the header
+            writer.writerow([CusName, CusBud]) 
+            print("Your name is : {} and you have €{}".format(CusName, CusBud))
 
-        i = 0
+            ProdList = int(input("How many products do you have on your Shopping List: "))
 
-        while i < ProdList:
+            i = 0
 
-            pname = input("\nWhat Product do you Require? ")
+            while i < ProdList:
 
-            quantity = float(input("How many of {} do you require? ".format(pname)))
+                pname = input("\nWhat Product do you Require? ")
+                quantity = float(input("How many of {} do you require? ".format(pname)))
 
-            p = Product(pname)
-            ps = ProductStock(p, quantity)
-            self.shopping_list_live.append(ps) 
+                # write the header
+                writer.writerow([pname, quantity])
 
-            print(f'The product is: {pname} and you want %.0f ' % (quantity))
+                print(f'The product is: {pname} and you want %.0f ' % (quantity))
 
-            i += 1
+                i += 1
 
 
-    
-                    
+                   
 # Main
 def main():
 
@@ -232,11 +213,10 @@ def main():
             c.calculate_costs(s)
 
         elif (choice == "3"): 
-            l = Live()
-            #print(l)
+            Customer.liveMode()
+            l = Customer("../livemode.csv")
             Customer.print_customer(l)
-            #Customer.calculate_costs(l,s)
-            
+            l.calculate_costs(s)
             
         
         elif (choice == "4"): 

@@ -157,8 +157,6 @@ def liveMode():
     CusName  = input("Enter Your Name : ")
     CusBud  = input("Enter your Budget: ")
     
-
-
     print("Your name is : {} and you have €{}".format(CusName, CusBud))
 
     c = Customer(CusName, float(CusBud))
@@ -168,7 +166,6 @@ def liveMode():
     i = 0
 
     while i < ProdList:
-
 
         pname = input("\nWhat Product do you Require? ")
 
