@@ -63,7 +63,7 @@ void printProduct(struct Product p)
 
 //****************************************************************
 // Create Stock from CSV file
-// Method to import data from CSV file
+// Method to import shop data from CSV file
 // https://stackoverflow.com/questions/2175574/pass-path-to-file-filename-as-argument-to-a-function-that-prints-the-file-to-s
 struct Shop createAndStockShop(const char* str)
 {
@@ -80,7 +80,7 @@ struct Shop createAndStockShop(const char* str)
     fp = fopen(str, "r");
     if (fp == NULL)
 		{
-		printf("/nFile not found, Exit program\n");	
+		printf("\nShop File not found, Exit program\n");	
         exit(EXIT_FAILURE);
 		}
 
@@ -128,7 +128,7 @@ struct Shop createAndStockShop(const char* str)
 
 //****************************************************************
 // Method to print out data from struct Shop *liveShop
-// This method is reused when calling selecting 1 from the Menu
+// This method is reused when selecting 1 from the Menu
 // The void keyword specifies that the function doesn't return a value
 void printShop(struct Shop* s)
 {
@@ -158,45 +158,48 @@ struct Customer customer_file(const char* str)
     size_t len = 0;
     ssize_t read;
 
-	// Exit program if file not found
+	// Return to main menu if file not found
     fp = fopen(str, "r");
     if (fp == NULL)
         {
-		printf("\nFile not found, Exit program\n");	
-        exit(EXIT_FAILURE);
+		// printf("\nCustomer File not found, Test part 1\n");	  // Test point
+		struct Customer custlist = {};
+        return custlist;
 		}
+	else
+		{
+		// Read firstline of csv file and get Name and Budget
+		read = getline(&line, &len, fp);
+		char *cn = strtok(line, ",");
+		char *cname = malloc(sizeof(char) * 50);
+		strcpy(cname, cn);
 
-	// Read firstline of csv file and get Name and Budget
-	read = getline(&line, &len, fp);
-	char *cn = strtok(line, ",");
-	char *cname = malloc(sizeof(char) * 50);
-	strcpy(cname, cn);
+		float budget = atof(strtok(NULL, ","));
+		// printf("name %s cash for shopping is %.2f\n", name, budget);  // Test point
+		
+		struct Customer custlist = { cname, budget };
 
-	float budget = atof(strtok(NULL, ","));
-	// printf("name %s cash for shopping is %.2f\n", name, budget);  // Test point
-	
-	struct Customer custlist = { cname, budget };
+		while ((read = getline(&line, &len, fp)) != -1) {
+			// printf("\n%s IS A LINE\n", line);  // Test point
+			char *n = strtok(line, ",");
+			char *q = strtok(NULL, ",");
+			int quantity = atoi(q);
 
-    while ((read = getline(&line, &len, fp)) != -1) {
-        // printf("\n%s IS A LINE\n", line);  // Test point
-		char *n = strtok(line, ",");
-		char *q = strtok(NULL, ",");
-		int quantity = atoi(q);
+			char *pname = malloc(sizeof(char) * 50);
+			strcpy(pname, n);
+			struct Product product = { pname };
+			struct ProductStock stockItem = { product, quantity };
+			custlist.shoppingList[custlist.index++] = stockItem;
 
-		char *pname = malloc(sizeof(char) * 50);
-		strcpy(pname, n);
-		struct Product product = { pname };
-		struct ProductStock stockItem = { product, quantity };
-		custlist.shoppingList[custlist.index++] = stockItem;
-
-    }
-	return custlist;
+		}
+		return custlist;
+	}
 }
 //****************************************************************
 
 //****************************************************************
-// Method to recieve customer data from file (struct Customer shoppinglist) or 
-// live (struct Customer shoppinglist2)
+// Method to recieve customer data from "2. Customer Shopping List" or
+// "3. Live mode" or "4. File Read: Customer Shopping List"
 // Read data and print results to screen
 // Edited from MPP - Week 4 - Shop in C Part 2.mov
 
@@ -212,10 +215,10 @@ void printCustomer(struct Customer c, struct Shop* s)
 	// Test for Quantity
 	int quan = 0;
 
-	
+	// Loop through customer products
 	for (int a = 0; a < c.index; a++)
 	{
-		
+		//////////////////////////////////////////////////////////////////
 		// https://www.geeksforgeeks.org/strcmp-in-c-cpp/
 		// https://stackoverflow.com/questions/48133294/c-string-comparison-in-an-if-statement-doesnt-work
 		// Set Check for item in shop
@@ -225,26 +228,31 @@ void printCustomer(struct Customer c, struct Shop* s)
 		char *cusItem = c.shoppingList[a].product.name;
 	
 		//printf("The output 1 name is %d, for %s\n", res, cusItem);  // Test point
-
 		// printf("The product name is  %s\n", c.shoppingList[a].product.name);  // Test point
+
+		//////////////////////////////////////////////////////////////////
 		// Edited from 
 		// MPP - Week 8 - C - Passing Arguments As Pointer.mov
 		// ProductStock.c
+		// Loop through shop products
 		for (int b = 0; b < s->index; b++)
 			{
 
-				//printf("The output 1 name is %d\n", strcmp(cusItem, s->stock[b].product.name));  // Test point	
-				
+				//printf("The output 1 name is %d\n", strcmp(cusItem, s->stock[b].product.name));  // Test point
+
+				//////////////////////////////////////////////////////////////////	
+				// If shop and customer products match
 				if (strcmp(s->stock[b].product.name, cusItem ) == 0)
 				{
+					//////////////////////////////////////////////////////////////////
 					// If item in shop set res to 1
 					res = 1;
-					//printf("The output 2 name is %d\n", strcmp(cusItem, s->stock[b].product.name));   // Test point	
+					//printf("The output 2 name is %d\n", strcmp(cusItem, s->stock[b].product.name));   // Test point
+					//////////////////////////////////////////////////////////////////	
 					// MPP - Week 8 - Shop in C - Processing the Order.mov
-					// printf("The cost of %s in the shop is €%.2f\n", c.shoppingList[a].product.name, s->stock[b].product.price);  // Test point
+					// Get subtotal 
 					double subtotal = c.shoppingList[a].quantity * s->stock[b].product.price;
-					// printf("The cost of %d %s in the shop is €%.2f\n\n", c.shoppingList[a].quantity, c.shoppingList[a].product.name, subtotal);  // Test point
-					
+
 					
 					//////////////////////////////////////////////////////////////////
 					// Know whether or not the shop can fill an order
@@ -305,58 +313,46 @@ void printCustomer(struct Customer c, struct Shop* s)
 
 	}
 	//////////////////////////////////////////////////////////////////
-	// Shop process the orders of the customer
-	// 
+	// Shop processes the orders of the customer
 	else if (c.budget >= total ){
-		//////////////////////////////////////////////////////////////////
-		// Update the Stock in the Shop
 		for (int a = 0; a < c.index; a++)
-	{
-		
-		// https://www.geeksforgeeks.org/strcmp-in-c-cpp/
-		// https://stackoverflow.com/questions/48133294/c-string-comparison-in-an-if-statement-doesnt-work
+		{
+		//////////////////////////////////////////////////////////////////
 		// Set Check for item in shop
 		int res = 0;
 
-		//printf("The Customer wants %d of %s\n", c.shoppingList[i].quantity, c.shoppingList[i].product.name);
-		// double cusBud = c.budget;
+		//printf("The Customer wants %d of %s\n", c.shoppingList[i].quantity, c.shoppingList[i].product.name);  // Test point
+
 		char *cusItem = c.shoppingList[a].product.name;
-		// int cusQuan = c.shoppingList[a].quantity;
 
-		//printf("The output 1 name is %d, for %s\n", res, cusItem);
-
-		// printf("The product name is  %s\n", c.shoppingList[a].product.name);  // Test point
-		// Edited from 
-		// MPP - Week 8 - C - Passing Arguments As Pointer.mov
-		// ProductStock.c
 		for (int b = 0; b < s->index; b++)
 			{
 
-				//printf("The output 1 name is %d\n", strcmp(cusItem, s->stock[b].product.name));	
-				
+				//printf("The output 1 name is %d\n", strcmp(cusItem, s->stock[b].product.name));  // Test point	
+
+				// 
 				if (strcmp(s->stock[b].product.name, cusItem ) == 0)
 				{
 					// If item in shop set res to 1
 					res = 1;
-					//printf("The output 2 name is %d\n", strcmp(cusItem, s->stock[b].product.name));	
-					// MPP - Week 8 - Shop in C - Processing the Order.mov
+					//////////////////////////////////////////////////////////////////
+					// Update the Stock in the Shop
 					s->stock[b].quantity =  s->stock[b].quantity - c.shoppingList[a].quantity;
+
 					double subtotal = c.shoppingList[a].quantity * s->stock[b].product.price;
+
+					// Print to screen the cost of the item
 					printf("The cost of %s in the shop is €%.2f\n", c.shoppingList[a].product.name, s->stock[b].product.price);
+
+					// Print to screen the total cost of the items requested by the customers
 					printf("The cost of %d %s in the shop is €%.2f\n\n", c.shoppingList[a].quantity, c.shoppingList[a].product.name, subtotal);
 					
-					
-					//////////////////////////////////////////////////////////////////
-					// Know whether or not the shop can fill an order
-					
-					//////////////////////////////////////////////////////////////////
 				}		
 
 			}
 
 			//////////////////////////////////////////////////////////////////
-			// If item not in shop or cannot fill order print to screen
-			// 		Thrown an appropriate error.
+			// If item requested by customer is not in shop 
 			if (res == 0)
 					{
 							printf("The shop does not have the following product: %s\n", cusItem);
@@ -384,16 +380,18 @@ void printCustomer(struct Customer c, struct Shop* s)
 // The user should be able to buy many products in this way.
 // https://www.programiz.com/c-programming/examples/structure-store-information
 // https://programminghead.com/c-programming-printing-your-name-using-c-program
-// https://stackoverflow.com/questions/16248841/how-to-use-a-loop-function-with-user-input-in-c
-// https://stackoverflow.com/questions/1247989/how-do-you-allow-spaces-to-be-entered-using-scanf
 
 struct Customer liveMode(){
-	
+	//////////////////////////////////////////////////////////////////
+	// Enter customer name
+	// https://stackoverflow.com/questions/1247989/how-do-you-allow-spaces-to-be-entered-using-scanf
 	char *name = malloc(sizeof(char) * 50);
 	printf("Enter Your Name : "); 
 	fgets(name, sizeof name, stdin);
   	scanf("%[^\n]%*c",name);
 
+	//////////////////////////////////////////////////////////////////
+	// Enter customer budget
 	float budget;
 	printf("Enter your Budget: ");
     scanf("%f", &budget);
@@ -404,17 +402,24 @@ struct Customer liveMode(){
 
 	int i;
 	int a = 0; 
+
+	//////////////////////////////////////////////////////////////////
+	// How many Products does the customer require?
 	printf("How many products do you have on your Shopping List: ");
     scanf("%d", &i);
 	
-
+	//////////////////////////////////////////////////////////////////
+	// How many Products does the customer require?
+	// https://stackoverflow.com/questions/16248841/how-to-use-a-loop-function-with-user-input-in-c
 	do
 	{
+		// Enter product name
 		char *pname = malloc(sizeof(char) * 50);
 		printf("\nWhat Product do you Require? "); 
 		fgets(pname, sizeof pname, stdin);
   		scanf("%[^\n]%*c",pname);
 
+		// Enter product quantity
 		int quantity;
 		printf("How many of %s do you require? ", pname);
 		scanf("%d", &quantity);
@@ -441,7 +446,7 @@ char * filename(){
 	
 	
 	char *filename = malloc(sizeof(char) * 50);
-	printf("Enter Filename: "); 
+	printf("What is the name of your shopping list? "); 
 	fgets(filename, sizeof filename, stdin);
 	scanf("%s",filename);
 	
@@ -468,7 +473,7 @@ char * filename(){
 // The option available:
 // Selecting 1 - Print the Stock and Cash avaiable to the shop 
 
-// Selecting 2 - Read in customer orders from a CSV file.
+// Selecting 2 - Read in customer orders from original CSV file 'customer.csv'.
 // – That file should include all the products they want and the quantity.
 // – It should also include their name and budget
 // - Process the orders of the customer
@@ -484,7 +489,15 @@ char * filename(){
 // - Know whether or not the shop can fill an order
 // - Thrown an appropriate error.
 
-// Selecting 4 - Exit the Program.
+// Selecting 4 - User can input CSV filename from file location '../'
+// – That file should include all the products they want and the quantity.
+// – It should also include their name and budget
+// - Process the orders of the customer
+// - Know whether or not the shop can fill an order
+// - Thrown an appropriate error.
+// - 
+
+// Selecting 5 - Exit the Program.
 
 int main()
 {
@@ -521,8 +534,6 @@ int main()
         
             case 2:
 				{
-				//struct Shop shop = createAndStockShop();
-				//customer_file();
 				struct Customer shoppinglist = customer_file("../customer.csv");
 				printCustomer(shoppinglist, liveShop);
 				}
@@ -540,7 +551,16 @@ int main()
 				char* userfile = filename();
 				// printf("Your filepath is : %s \n ", userfile);  // Test point
 				struct Customer shoppinglist = customer_file(userfile);
-				printCustomer(shoppinglist, liveShop);
+				// printf("Customer name is %s and the budget for shopping is €%.2f\n", shoppinglist.cname, shoppinglist.budget);  // Test point
+				// Verify
+				if (shoppinglist.cname == NULL)
+					{
+					printf("\nCustomer shopping list not found\n");
+					}
+				else
+					{
+					printCustomer(shoppinglist, liveShop);
+					}
 				}
 				break;
         
