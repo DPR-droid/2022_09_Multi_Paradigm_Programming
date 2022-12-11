@@ -245,6 +245,7 @@ def liveMode():
 
     i = 0
 
+    # Loop Through customers products and quantity
     while i < ProdList:
 
         pname = input("\nWhat Product do you Require? ")
@@ -260,47 +261,77 @@ def liveMode():
         i += 1
 
     return c
+#****************************************************************
 
 
+#****************************************************************
 # Main
+# Add Menu
+# The option available:
+# Selecting 1 - Print the Stock and Cash avaiable to the shop 
+
+# Selecting 2 - Read in customer orders from original CSV file 'customer.csv'.
+# – That file should include all the products they want and the quantity.
+# – It should also include their name and budget
+# - Process the orders of the customer
+# - Know whether or not the shop can fill an order
+# - Thrown an appropriate error.
+# - 
+
+# Selecting 3 - Operate in a live mode, where the user can enter a 
+# product by name, specify a quantity, and pay for it. 
+# The user should be able to buy many products in this way.
+# – It should also include their name and budget
+# - Process the orders of the customer
+# - Know whether or not the shop can fill an order
+# - Thrown an appropriate error.
+
+# Selecting 4 - User can input CSV filename from file location '../'
+# – That file should include all the products they want and the quantity.
+# – It should also include their name and budget
+# - Process the orders of the customer
+# - Know whether or not the shop can fill an order
+# - Thrown an appropriate error.
+# - 
+
+# Selecting 5 - Exit the Program.
+
 def main():
 
+    # The shop CSV should hold the initial cash value for the shop.
+    # Create the Shop Stock from CSV file.
     s = create_and_stock_shop('../stock.csv')
 
     while True: 
         display_menu()
 
         choice = input("Enter your choice :  ")
-        # 
+
         if (choice == "1"):
-            
+            # Print out Shop Stock
             print_shop(s)
-            # break
-            
-        # 
+
         elif (choice == "2"):
+            # Read in original customer file
             c = read_customer("../customer.csv")
             print_customer(c, s)
 
-            # break
-
         elif (choice == "3"): 
+            # Live Mode
             c = liveMode()
             print_customer(c, s)
-            # break
         
         elif (choice == "4"): 
+            #  User input to read in any customer orders from CSV file
             filename = input("What is the name of your shopping list? ")
             filepath = str("../" + filename)
-            # print(filepath)
             # Exit program if file not found
             fileexists = os.path.exists(filepath)
             if fileexists == False:
-                print("\nCustomer shopping list not found\n")
+                print("\nCustomer shopping list not found")
             else:
                 c = read_customer(filepath)
                 print_customer(c, s)
-            # break
 
         elif (choice == "5"): 
             print("\n\n\t\t\tExit the Python Proc Shop\n")

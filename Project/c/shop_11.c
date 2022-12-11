@@ -409,7 +409,7 @@ struct Customer liveMode(){
     scanf("%d", &i);
 	
 	//////////////////////////////////////////////////////////////////
-	// How many Products does the customer require?
+	// Loop Through customers products and quantity
 	// https://stackoverflow.com/questions/16248841/how-to-use-a-loop-function-with-user-input-in-c
 	do
 	{
@@ -513,7 +513,8 @@ int main()
 
     while(1)
     {
-        printf("\n\n#### Main Menu ####\n");
+        // Print user menu
+		printf("\n\n#### Main Menu ####\n");
 		printf("1. Stock in Shop\n");
         printf("2. Customer Shopping List\n");
         printf("3. Live mode\n");
@@ -527,13 +528,14 @@ int main()
             case 1:
                 {
 				// struct Shop shop = createAndStockShop();
-				// Print out Shop Stock#
+				// Print out Shop Stock
 				printShop(liveShop);
 				}
                 break;
         
             case 2:
 				{
+				// Read in original customer file
 				struct Customer shoppinglist = customer_file("../customer.csv");
 				printCustomer(shoppinglist, liveShop);
 				}
@@ -541,6 +543,7 @@ int main()
         
             case 3:
 				{
+				// Live Mode
 				struct Customer shoppinglist2 = liveMode();
 				printCustomer(shoppinglist2, liveShop);
 				}
@@ -548,18 +551,19 @@ int main()
 			
 			case 4:
 				{
+				// User input to read in any customer orders from CSV file
 				char* userfile = filename();
 				// printf("Your filepath is : %s \n ", userfile);  // Test point
-				struct Customer shoppinglist = customer_file(userfile);
+				struct Customer shoppinglist3 = customer_file(userfile);
 				// printf("Customer name is %s and the budget for shopping is €%.2f\n", shoppinglist.cname, shoppinglist.budget);  // Test point
-				// Verify
-				if (shoppinglist.cname == NULL)
+				// Verify if struct is empty
+				if (shoppinglist3.cname == NULL )
 					{
 					printf("\nCustomer shopping list not found\n");
 					}
 				else
 					{
-					printCustomer(shoppinglist, liveShop);
+					printCustomer(shoppinglist3, liveShop);
 					}
 				}
 				break;
