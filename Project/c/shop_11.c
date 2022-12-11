@@ -527,40 +527,55 @@ int main()
         {
             case 1:
                 {
-				// struct Shop shop = createAndStockShop();
-				// Print out Shop Stock
+				//////////////////////////////////////////////////////////////////
+				// Print out the current state of the shop
 				printShop(liveShop);
 				}
                 break;
         
             case 2:
 				{
+				//////////////////////////////////////////////////////////////////	
 				// Read in original customer file
+				// Create the struct shoppinglist
 				struct Customer shoppinglist = customer_file("../customer.csv");
+				// Call method to print customer details and process the order 
 				printCustomer(shoppinglist, liveShop);
 				}
                 break;
         
             case 3:
 				{
+				//////////////////////////////////////////////////////////////////
 				// Live Mode
+				// Create the struct shoppinglist2
 				struct Customer shoppinglist2 = liveMode();
+				//////////////////////////////////////////////////////////////////
+				// Call method to print customer details and process the order 
 				printCustomer(shoppinglist2, liveShop);
 				}
 				break;
 			
 			case 4:
 				{
+				//////////////////////////////////////////////////////////////////
 				// User input to read in any customer orders from CSV file
 				char* userfile = filename();
+
 				// printf("Your filepath is : %s \n ", userfile);  // Test point
+				//////////////////////////////////////////////////////////////////
+				// User File mode
+				// Create the struct shoppinglist3
 				struct Customer shoppinglist3 = customer_file(userfile);
 				// printf("Customer name is %s and the budget for shopping is €%.2f\n", shoppinglist.cname, shoppinglist.budget);  // Test point
-				// Verify if struct is empty
+
+				//////////////////////////////////////////////////////////////////
+				// Verify if name is NULL in struct and print relevant message 
 				if (shoppinglist3.cname == NULL )
 					{
 					printf("\nCustomer shopping list not found\n");
 					}
+				// Else call method to print customer details and process the order 
 				else
 					{
 					printCustomer(shoppinglist3, liveShop);

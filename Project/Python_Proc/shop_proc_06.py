@@ -314,11 +314,13 @@ def main():
         elif (choice == "2"):
             # Read in original customer file
             c = read_customer("../customer.csv")
+            # Call function to print customer details and process the order
             print_customer(c, s)
 
         elif (choice == "3"): 
             # Live Mode
             c = liveMode()
+            # Call method to print customer details and process the order 
             print_customer(c, s)
         
         elif (choice == "4"): 
@@ -331,6 +333,7 @@ def main():
                 print("\nCustomer shopping list not found")
             else:
                 c = read_customer(filepath)
+                # Call function to print customer details and process the order
                 print_customer(c, s)
 
         elif (choice == "5"): 
