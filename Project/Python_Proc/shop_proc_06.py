@@ -166,6 +166,7 @@ def print_customer(c, s):
                     # Get Total bill of shopping
                     total = total + subtotal
 
+                # If shop item quantity is less than customer request
                 elif (sitem.quantity < citem.quantity):
                     print(f"The shop cannot fill the order of product: {cusItem}\n")
                     quan = 1
@@ -313,12 +314,14 @@ def main():
 
         elif (choice == "2"):
             # Read in original customer file
+            # Create a new object
             c = read_customer("../customer.csv")
             # Call function to print customer details and process the order
             print_customer(c, s)
 
         elif (choice == "3"): 
             # Live Mode
+            # Create a new object
             c = liveMode()
             # Call method to print customer details and process the order 
             print_customer(c, s)
@@ -327,7 +330,7 @@ def main():
             #  User input to read in any customer orders from CSV file
             filename = input("What is the name of your shopping list? ")
             filepath = str("../" + filename)
-            # Exit program if file not found
+            # Return to main menu if file not found
             fileexists = os.path.exists(filepath)
             if fileexists == False:
                 print("\nCustomer shopping list not found")

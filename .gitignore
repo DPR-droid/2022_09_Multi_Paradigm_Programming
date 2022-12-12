@@ -156,6 +156,7 @@ $RECYCLE.BIN/
 *.docx
 *.pdf
 *.mov
+*.odt
 
 # Windows shortcuts
 *.lnk
