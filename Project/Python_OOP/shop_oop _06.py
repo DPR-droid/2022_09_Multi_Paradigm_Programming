@@ -18,11 +18,6 @@ class Product:
     def __init__(self, name, price=0):
         self.name = name
         self.price = price
-    
-    # returns the object representation in string format
-    # def __repr__(self):
-    #     #return f'PRODUCT NAME: {self.name}\nPRODUCT PRICE: €%.2f\n-------------\n\n' % self.price
-    #     return self.name, self.price
         
 # ProductStock class
 class ProductStock:
@@ -42,11 +37,6 @@ class ProductStock:
     # cost function attribute of class ProductStock   
     def cost(self):
         return self.unit_price() * self.quantity
-
-    # returns the object representation in string format  
-    # def __repr__(self):
-    #     return f"{self.product}The shop has {self.quantity} of:"
-        
 #****************************************************************
 
 
@@ -56,9 +46,8 @@ class Shop:
     # Create Stock from CSV file 
     def __init__(self, path):
 
-
         # Exit program if file not found
-        fileexists =  os.path.exists(path)
+        fileexists = os.path.exists(path)
         if fileexists == False:
             print("\nShop File not found, Exit program")
             sys.exit()
@@ -85,15 +74,58 @@ class Shop:
             print(f'PRODUCT NAME: {item.product.name} \nPRODUCT PRICE: €%.2f' % (item.product.price))
             print(f'-------------')
 
-    def checkstock(custlist, shoplist):
+    # Compare the list of products of shop and customer
+    def not_in_stock(custlist, shoplist):
         notinstock = set(custlist) - set(shoplist)
         # str = ""
         for nis in notinstock:
             print(f"The shop does not have the following product: {nis}")
             # str += f"The shop does not have the following product: {nis}\n"
 
-    # def shopcash(self):
-    #     return self.cash            
+
+    # Shopping list that cannot be completed by the shop.
+	# Test for Quantity is set to 1 therefore thrown an appropriate error.
+    def cannot_fill_order(too_much):
+        print(f"The shop cannot fill the order of product: {too_much}\n")
+        print(f"\n-------------\n")
+        print(f"Unfortunately the shop cannot fill you order\n")
+        print(f"------------\n\n")
+
+
+    # customer has sufficient funds
+    def insufficient_funds(total, budget, name):
+            insufficientfunds = total - budget
+            print(f"\n-------------")
+            print(f"The total cost of {name} shopping is €%.2f" % (total))
+            print(f"{name} requires €%.2f more for the shopping"% (insufficientfunds))
+            print(f"------------")
+        
+    # Processes the orders of the customer and update the shop
+    def processorder(self, shopping_list):
+        for shop_item in self.stock:
+        
+            for list_item in shopping_list:
+
+                if (list_item.name() == shop_item.name()):
+                    cusQuan = int(list_item.quantity)
+                    
+                    shop_item.quantity = shop_item.quantity - list_item.quantity
+
+                    print(f'The cost of {shop_item.product.name} in the shop is €%.2f' % (shop_item.product.price))
+                    subtotal = round((shop_item.product.price * list_item.quantity),2)
+                    print(f'The cost of {cusQuan} {shop_item.product.name} in the shop is €%.2f\n' % subtotal)
+        
+
+    def updatecash(self, budget, total, name):
+        # Update the cash in the shop based on money received
+        self.cash = self.cash + total
+        print(f"\n-------------")
+        print(f'The total cost of {name} shopping is €%.2f' % (total))
+
+        # Output Change for Customer
+        change = budget - total
+        print(f'You have change of €%.2f' % (change))
+        print(f"------------\n")           
 #****************************************************************
 
 
@@ -122,28 +154,30 @@ class Customer:
         print(f'-------------\n')
 
     # Function to calculate the cost of customer shopping
-    def calculate_costs(self, shop):
+    def check_shopping_list(self, shop):
 
         # Set the variable for the total cost of Customer bill.
-        total = 0
+        self.total = 0
         
         # Test for Quantity
-        quan = 0
+        self.quan = 0
         
         # List for Shop and Customer Products
-        custlist = []
-        shoplist = []
+        self.custlist = []
+        self.shoplist = []
+
+        self.too_much_stuff = ""
         
         # Loop through shop products
         for shop_item in shop.stock:
             #print(f'Part 1 {shop_item.product.name}') 
-            shoplist.append(shop_item.product.name)
+            self.shoplist.append(shop_item.product.name)
 
             # Loop through customer products
             for list_item in self.shopping_list:
 
                 #print(f'Part 2 {list_item.name()}') 
-                custlist.append(list_item.name())
+                self.custlist.append(list_item.name())
 
                 # If shop and customer products match
                 if (list_item.name() == shop_item.name()):
@@ -157,59 +191,13 @@ class Customer:
                         # print(shop_item.quantity )
 
                         # Get Total bill of shopping
-                        total = total + subtotal
+                        self.total = self.total + subtotal
                     
                     # If shop item quantity is less than customer request
                     elif (shop_item.quantity < list_item.quantity):
-                        print(f"The shop cannot fill the order of product: {list_item.name()}\n")
-                        quan = 1
-
-        # Shopping list that cannot be completed by the shop.
-	    # Test for Quantity is set to 1 therefore thrown an appropriate error.
-        if (quan == 1):
-            print(f"\n-------------\n")
-            print(f"Unfortunately the shop cannot fill you order\n")
-            print(f"------------\n\n")
-            return
-
-        # If customer has sufficient funds
-        elif (self.budget < total):
-            insufficient_funds = total - self.budget
-            print(f"\n-------------")
-            print(f"The total cost of {self.name} shopping is €%.2f" % (total))
-            print(f"{self.name} requires €%.2f more for the shopping"% (insufficient_funds))
-            print(f"------------")
-            return
-
-        # Processes the orders of the customer and update the shop
-        elif (self.budget >= total ):
-
-            for shop_item in shop.stock:
-            
-                for list_item in self.shopping_list:
-
-                    if (list_item.name() == shop_item.name()):
-                        cusQuan = int(list_item.quantity)
-                        
-                        shop_item.quantity = shop_item.quantity - list_item.quantity
-
-                        print(f'The cost of {shop_item.product.name} in the shop is €%.2f' % (shop_item.product.price))
-                        subtotal = round((shop_item.product.price * list_item.quantity),2)
-                        print(f'The cost of {cusQuan} {shop_item.product.name} in the shop is €%.2f\n' % subtotal)
-            
-            # The shop Class function of checkstock
-            # Compare the list of products of shop and customer
-            Shop.checkstock(custlist, shoplist)
-            
-            # Update the cash in the shop based on money received
-            shop.cash = shop.cash + total
-            print(f"\n-------------")
-            print(f'The total cost of {self.name} shopping is €%.2f' % (total))
-
-            # Output Change for Customer
-            change = self.budget - total
-            print(f'You have change of €%.2f' % (change))
-            print(f"------------\n")
+                        #print(f"The shop cannot fill the order of product: {list_item.name()}\n")
+                        self.quan = 1
+                        self.too_much_stuff = list_item.name()
 
     
     def liveMode():
@@ -310,7 +298,13 @@ def main():
             # Run the function Customer print_customer            
             Customer.print_customer(c)
             # Run the function Customer calculate_costs
-            c.calculate_costs(s)
+            c.check_shopping_list(s)
+            # shop to process order
+            Shop.processorder(s, c.shopping_list)
+            # shop to check not in stock
+            Shop.not_in_stock(c.custlist, c.shoplist)
+            # shop update cash
+            Shop.updatecash(s, c.budget, c.total, c.name)
 
         elif (choice == "3"): 
             # Customer function liveMode
@@ -320,7 +314,19 @@ def main():
             # Run the function Customer print_customer  
             Customer.print_customer(l)
             # Run the function Customer calculate_costs
-            l.calculate_costs(s)
+            l.check_shopping_list(s)
+            if l.quan == 1:
+                Shop.cannot_fill_order(l.too_much_stuff)
+                # print(c.too_much_stuff)
+            elif (l.budget < l.total):
+                Shop.insufficient_funds(l.total,l.budget, l.name)
+            elif (l.budget >= l.total ):
+                # shop to process order
+                Shop.processorder(s, l.shopping_list)
+                # shop to check not in stock
+                Shop.not_in_stock(l.custlist, l.shoplist)
+                # shop update cash
+                Shop.updatecash(s, l.budget, l.total, l.name)
             
         
         elif (choice == "4"): 
@@ -333,9 +339,22 @@ def main():
             if fileexists == False:
                 print("\nCustomer shopping list not found")
             else:
-                c = Customer(filepath)
-                Customer.print_customer(c)
-                c.calculate_costs(s)
+                f = Customer(filepath)
+                Customer.print_customer(f)
+                # Run the function Customer calculate_costs
+                f.check_shopping_list(s)
+                if f.quan == 1:
+                    Shop.cannot_fill_order(f.too_much_stuff)
+                    # print(c.too_much_stuff)
+                elif (f.budget < f.total):
+                    Shop.insufficient_funds(f.total,f.budget, f.name)
+                elif (f.budget >= f.total ):
+                    # shop to process order
+                    Shop.processorder(s, f.shopping_list)
+                    # shop to check not in stock
+                    Shop.not_in_stock(f.custlist, f.shoplist)
+                    # shop update cash
+                    Shop.updatecash(s, f.budget, f.total, f.name)
 
         elif (choice == "5"): 
             print("\n\n\t\t\tExit the Python OOP Shop\n")

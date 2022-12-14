@@ -103,7 +103,7 @@ def print_shop(s):
 #****************************************************************
 # Create Stock from CSV file
 # Function to import customer data from CSV file
-def read_customer(file_path):
+def customer_file(file_path):
 
         with open(file_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
@@ -315,7 +315,7 @@ def main():
         elif (choice == "2"):
             # Read in original customer file
             # Create a new object
-            c = read_customer("../customer.csv")
+            c = customer_file("../customer.csv")
             # Call function to print customer details and process the order
             print_customer(c, s)
 
@@ -335,7 +335,7 @@ def main():
             if fileexists == False:
                 print("\nCustomer shopping list not found")
             else:
-                c = read_customer(filepath)
+                c = customer_file(filepath)
                 # Call function to print customer details and process the order
                 print_customer(c, s)
 
