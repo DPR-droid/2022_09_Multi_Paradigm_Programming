@@ -159,6 +159,7 @@ $RECYCLE.BIN/
 *.odt
 *.odt#
 *LibreOffice*
+*.zip
 
 # Windows shortcuts
 *.lnk
